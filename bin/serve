@@ -37,6 +37,12 @@ var log = true;
 var hidden = false;
 
 /**
+ * Default log format string.
+ */
+
+var logFormat = ':method :url - :response-timems';
+
+/**
  * Show directory listing icons.
  */
 
@@ -58,12 +64,13 @@ var usage = [
   , ''
   , '  Options:'
   , ''
-  , '    -I, --no-icons     disable icons'
-  , '    -L, --no-logs      disable logging'
-  , '    -D, --no-dirs      disable directory serving'
-  , '    -H, --hidden       enable hidden file serving'
-  , '    -p, --port <port>  specify the <port>, defaults to 3000'
-  , '    -h, --help         show usage information'
+  , '    -F, --format <fmt>  specify the log format string'
+  , '    -I, --no-icons      disable icons'
+  , '    -L, --no-logs       disable logging'
+  , '    -D, --no-dirs       disable directory serving'
+  , '    -H, --hidden        enable hidden file serving'
+  , '    -p, --port <port>   specify the <port>, defaults to 3000'
+  , '    -h, --help          show usage information'
   , ''
 ].join('\n');
 
@@ -86,6 +93,10 @@ while (args.length) {
     case '--help':
       console.log(usage);
       process.exit(0);
+      break;
+    case '-F':
+    case '--format':
+      logFormat = required();
       break;
     case '-L':
     case '--no-logs':
@@ -117,8 +128,8 @@ while (args.length) {
 var server = connect();
 
 server.use(connect.favicon());
-if (log) server.use(connect.logger());
+if (log) server.use(connect.logger(logFormat));
 server.use(connect.static(path, { hidden: hidden }));
 if (directory) server.use(connect.directory(path, { hidden: hidden, icons: icons }));
 server.listen(port);
-console.log('  serving %s on port %d', path, server.address().port);
+console.log('serving %s on port %d', path, server.address().port);
