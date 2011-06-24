@@ -31,6 +31,18 @@ var directory = true;
 var log = true;
 
 /**
+ * Serve / list hidden files.
+ */
+
+var hidden = false;
+
+/**
+ * Show directory listing icons.
+ */
+
+var icons = true;
+
+/**
  * Module dependencies.
  */
 
@@ -46,8 +58,10 @@ var usage = [
   , ''
   , '  Options:'
   , ''
+  , '    -I, --no-icons     disable icons'
   , '    -L, --no-logs      disable logging'
   , '    -D, --no-dirs      disable directory serving'
+  , '    -H, --hidden       enable hidden file serving'
   , '    -p, --port <port>  specify the <port>, defaults to 3000'
   , '    -h, --help         show usage information'
   , ''
@@ -81,6 +95,14 @@ while (args.length) {
     case '--no-dirs':
       directory = false;
       break;
+    case '-I':
+    case '--no-icons':
+      icons = false;
+      break;
+    case '-H':
+    case '--hidden':
+      hidden = true;
+      break;
     case '-p':
     case '--port':
       port = Number(required());
@@ -96,7 +118,7 @@ var server = connect();
 
 server.use(connect.favicon());
 if (log) server.use(connect.logger());
-server.use(connect.static(path));
-if (directory) server.use(connect.directory(path));
+server.use(connect.static(path, { hidden: hidden }));
+if (directory) server.use(connect.directory(path, { hidden: hidden, icons: icons }));
 server.listen(port);
 console.log('  serving %s on port %d', path, server.address().port);

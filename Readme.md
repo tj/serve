@@ -9,14 +9,21 @@
 
 ## Usage
 
-      Usage: serve [options] [dir]
 
-      Options:
+    Usage: serve [options] [dir]
 
-        -L, --no-logs      disable logging
-        -D, --no-dirs      disable directory serving
-        -p, --port <port>  specify the <port>, defaults to 3000
-        -h, --help         show usage information
+    Options:
+
+      -I, --no-icons     disable icons
+      -L, --no-logs      disable logging
+      -D, --no-dirs      disable directory serving
+      -H, --hidden       enable hidden file serving
+      -p, --port <port>  specify the <port>, defaults to 3000
+      -h, --help         show usage information
+
+## Screenshots
+
+  ![directory listings](http://f.cl.ly/items/100M2C3o0p2u3A0q1o3H/Screenshot.png)
 
 ## License 
 
