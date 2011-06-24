@@ -7,6 +7,12 @@
 var args = process.argv.slice(2);
 
 /**
+ * Serve version.
+ */
+
+var version = '0.0.1';
+
+/**
  * Default port.
  */
 
@@ -64,6 +70,7 @@ var usage = [
   , ''
   , '  Options:'
   , ''
+  , '    -V, --version       output serve version'
   , '    -F, --format <fmt>  specify the log format string'
   , '    -I, --no-icons      disable icons'
   , '    -L, --no-logs       disable logging'
@@ -92,6 +99,11 @@ while (args.length) {
     case '-h':
     case '--help':
       console.log(usage);
+      process.exit(0);
+      break;
+    case '-V':
+    case '--version':
+      console.log(version);
       process.exit(0);
       break;
     case '-F':

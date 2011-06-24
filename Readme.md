@@ -1,7 +1,7 @@
 
 # serve
 
-  Simple command-line file / directory server built with connect, inspired by nodejitsu's [http-server](https://github.com/nodejitsu/http-server).
+  Simple 5 minute command-line file / directory server built with connect, inspired by nodejitsu's [http-server](https://github.com/nodejitsu/http-server).
 
 ## Installation
 
@@ -14,13 +14,14 @@
 
     Options:
 
+      -V, --version       output serve version
       -F, --format <fmt>  specify the log format string
-      -I, --no-icons     disable icons
-      -L, --no-logs      disable logging
-      -D, --no-dirs      disable directory serving
-      -H, --hidden       enable hidden file serving
-      -p, --port <port>  specify the <port>, defaults to 3000
-      -h, --help         show usage information
+      -I, --no-icons      disable icons
+      -L, --no-logs       disable logging
+      -D, --no-dirs       disable directory serving
+      -H, --hidden        enable hidden file serving
+      -p, --port <port>   specify the <port>, defaults to 3000
+      -h, --help          show usage information
 
 ## Screenshots
 
