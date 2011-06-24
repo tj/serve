@@ -23,7 +23,28 @@
       -p, --port <port>   specify the <port>, defaults to 3000
       -h, --help          show usage information
 
-## Screenshots
+## Examples
+
+ HTTP Accept support built into `connect.directory()`:
+ 
+     $ curl http://local:3000/ -H "Accept: text/plain"
+     bin
+     History.md
+     node_modules
+     package.json
+     Readme.md
+
+  Requesting a file:
+
+    $ curl http://local:3000/Readme.md
+
+     # serve
+     ...
+
+  Requesting JSON for the directory listing:
+
+    $ curl http://local:3000/ -H "Accept: application/json"
+    ["bin","History.md","node_modules","package.json","Readme.md"]
 
  Directory listing served by connect's `connect.directory()` middleware.
 
