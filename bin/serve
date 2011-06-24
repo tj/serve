@@ -1,0 +1,102 @@
+#!/usr/bin/env node
+
+/**
+ * Arguments.
+ */
+
+var args = process.argv.slice(2);
+
+/**
+ * Default port.
+ */
+
+var port = 3000;
+
+/**
+ * Default path to serve.
+ */
+
+var path = process.cwd();
+
+/**
+ * Use directory listings.
+ */
+
+var directory = true;
+
+/**
+ * Use logging with optional path.
+ */
+
+var log = true;
+
+/**
+ * Module dependencies.
+ */
+
+var connect = require('connect');
+
+/**
+ * Usage information.
+ */
+
+var usage = [
+    ''
+  , '  Usage: serve [options] [dir]'
+  , ''
+  , '  Options:'
+  , ''
+  , '    -L, --no-logs      disable logging'
+  , '    -D, --no-dirs      disable directory serving'
+  , '    -p, --port <port>  specify the <port>, defaults to 3000'
+  , '    -h, --help         show usage information'
+  , ''
+].join('\n');
+
+/**
+ * Required argument.
+ */
+
+function required() {
+  if (args.length) return args.shift();
+  console.error('  %s requires an argument', arg);
+  process.exit(1);
+}
+
+// parse arguments
+
+var arg;
+while (args.length) {
+  switch (arg = args.shift()) {
+    case '-h':
+    case '--help':
+      console.log(usage);
+      process.exit(0);
+      break;
+    case '-L':
+    case '--no-logs':
+      log = false;
+      break;
+    case '-D':
+    case '--no-dirs':
+      directory = false;
+      break;
+    case '-p':
+    case '--port':
+      port = Number(required());
+      break;
+    default:
+      path = arg;
+  }
+}
+
+// setup the server
+
+var server = connect();
+
+server.use(connect.favicon());
+if (log) server.use(connect.logger());
+server.use(connect.static(path));
+if (directory) server.use(connect.directory(path));
+server.listen(port);
+console.log('  serving %s on port %d', path, server.address().port);

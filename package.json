@@ -1,0 +1,10 @@
+{
+    "name": "serve"
+  , "version": "0.0.1"
+  , "description": "Simple command-line file / directory server build owith  connect"
+  , "keywords": []
+  , "author": "TJ Holowaychuk <tj@vision-media.ca>"
+  , "dependencies": { "connect": "1.5.x" }
+  , "main": "index"
+  , "engines": { "node": "0.4.x" }
+}
