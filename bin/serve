@@ -46,7 +46,7 @@ var hidden = false;
  * Default log format string.
  */
 
-var logFormat = ':method :url - :response-timems';
+var logFormat = ':method :url - :response-time ms';
 
 /**
  * Show directory listing icons.
