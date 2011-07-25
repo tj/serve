@@ -10,7 +10,7 @@ var args = process.argv.slice(2);
  * Serve version.
  */
 
-var version = '0.0.1';
+var version = '0.0.2';
 
 /**
  * Default port.
