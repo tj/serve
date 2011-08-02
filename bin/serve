@@ -1,6 +1,12 @@
 #!/usr/bin/env node
 
 /**
+ * Module dependencies.
+ */
+
+var resolve = require('path').resolve;
+
+/**
  * Arguments.
  */
 
@@ -131,7 +137,7 @@ while (args.length) {
       port = Number(required());
       break;
     default:
-      path = arg;
+      path = resolve(arg);
   }
 }
 
