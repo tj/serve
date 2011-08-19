@@ -11,7 +11,7 @@ var resolve = require('path').resolve
 // CLI
 
 program
-  .version('0.0.3')
+  .version('0.0.4')
   .usage('[options] [dir]')
   .option('-F, --format <fmt>', 'specify the log format string', ':method :url - :response-time ms')
   .option('-p, --port <port>', 'specify the port [3000]', Number, 3000)
