@@ -9,19 +9,24 @@
 
 ## Usage
 
+```
 
-    Usage: serve [options] [dir]
+Usage: serve [options] [dir]
 
-    Options:
+Options:
 
-      -V, --version       output serve version
-      -F, --format <fmt>  specify the log format string
-      -I, --no-icons      disable icons
-      -L, --no-logs       disable logging
-      -D, --no-dirs       disable directory serving
-      -H, --hidden        enable hidden file serving
-      -p, --port <port>   specify the <port>, defaults to 3000
-      -h, --help          show usage information
+  -v, --version       output the version number
+  -F, --format <fmt>  specify the log format string
+  -p, --port <port>   specify the port [3000]
+  -H, --hidden        enable hidden file serving
+  -S, --no-stylus     disable stylus rendering
+  -J, --no-jade       disable jade rendering
+  -I, --no-icons      disable icons
+  -L, --no-logs       disable request logging
+  -D, --no-dirs       disable directory serving
+  -h, --help          output usage information
+
+```
 
 ## Examples
 
