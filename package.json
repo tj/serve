@@ -4,7 +4,11 @@
   , "description": "Simple command-line file / directory server built with connect"
   , "keywords": ["static", "server", "connect"]
   , "author": "TJ Holowaychuk <tj@vision-media.ca>"
-  , "dependencies": { "connect": "1.5.x", "commander": "0.0.4" }
+  , "dependencies": {
+      "connect": "1.7.x"
+    , "stylus": "0.15.x"
+    , "commander": "0.0.4"
+  }
   , "bin": { "serve": "./bin/serve" }
   , "engines": { "node": "0.4.x" }
 }

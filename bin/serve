@@ -6,6 +6,7 @@
 
 var resolve = require('path').resolve
   , program = require('commander')
+  , stylus = require('stylus')
   , connect = require('connect');
 
 // CLI
@@ -22,8 +23,7 @@ program
   .parse(process.argv);
 
 // path
-var path = program.args.shift() || '.';
-
+var path = resolve(program.args.shift() || '.');
 // setup the server
 
 var server = connect();
@@ -33,6 +33,15 @@ server.use(connect.favicon());
 
 // logger
 if (program.logs) server.use(connect.logger(program.format));
+
+// convert .styl to .css to trick stylus.middleware
+server.use(function(req, res, next){
+  req.url = req.url.replace(/\.styl$/, '.css');
+  next();
+});
+
+// stylus
+server.use(stylus.middleware({ src: path }));
 
 // static files
 server.use(connect.static(path, { hidden: program.hidden }));
