@@ -5,9 +5,13 @@
  */
 
 var resolve = require('path').resolve
+  , join = require('path').join
   , program = require('commander')
+  , connect = require('connect')
   , stylus = require('stylus')
-  , connect = require('connect');
+  , jade = require('jade')
+  , url = require('url')
+  , fs = require('fs');
 
 // CLI
 
@@ -17,6 +21,8 @@ program
   .option('-F, --format <fmt>', 'specify the log format string', ':method :url - :response-time ms')
   .option('-p, --port <port>', 'specify the port [3000]', Number, 3000)
   .option('-H, --hidden', 'enable hidden file serving')
+  .option('-S, --no-stylus', 'disable stylus rendering')
+  .option('-J, --no-jade', 'disable jade rendering')
   .option('-I, --no-icons', 'disable icons')
   .option('-L, --no-logs', 'disable request logging')
   .option('-D, --no-dirs', 'disable directory serving')
@@ -24,8 +30,8 @@ program
 
 // path
 var path = resolve(program.args.shift() || '.');
-// setup the server
 
+// setup the server
 var server = connect();
 
 // ignore favicon
@@ -35,10 +41,32 @@ server.use(connect.favicon());
 if (program.logs) server.use(connect.logger(program.format));
 
 // convert .styl to .css to trick stylus.middleware
-server.use(function(req, res, next){
-  req.url = req.url.replace(/\.styl$/, '.css');
-  next();
-});
+if (program.stylus) {
+  server.use(function(req, res, next){
+    req.url = req.url.replace(/\.styl$/, '.css');
+    next();
+  });
+}
+
+// jade
+if (program.jade) {
+  server.use(function(req, res, next){
+    if (!req.url.match(/\.jade$/)) return next();
+    var file = join(path, url.parse(req.url).pathname);
+    fs.readFile(file, 'utf8', function(err, str){
+      if (err) return next(err);
+      try {
+        var fn = jade.compile(str, { filename: file });
+        str = fn();
+        res.setHeader('Content-Type', 'text/plain');
+        res.setHeader('Content-Length', str.length);
+        res.end(str);
+      } catch (err) {
+        next(err);
+      }
+    });
+  });
+}
 
 // stylus
 server.use(stylus.middleware({ src: path }));
