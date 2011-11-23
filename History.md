@@ -1,4 +1,10 @@
 
+1.0.1 / 2011-11-23 
+==================
+
+  * Added colors
+  * Changed default logger format to "dev"
+
 1.0.0 / 2011-11-07 
 ==================
 
