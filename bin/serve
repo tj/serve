@@ -18,7 +18,7 @@ var resolve = require('path').resolve
 program
   .version('1.0.0')
   .usage('[options] [dir]')
-  .option('-F, --format <fmt>', 'specify the log format string', ':method :url - :response-time ms')
+  .option('-F, --format <fmt>', 'specify the log format string', 'dev')
   .option('-p, --port <port>', 'specify the port [3000]', Number, 3000)
   .option('-H, --hidden', 'enable hidden file serving')
   .option('-S, --no-stylus', 'disable stylus rendering')
