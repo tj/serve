@@ -5,10 +5,10 @@
   , "keywords": ["static", "server", "connect"]
   , "author": "TJ Holowaychuk <tj@vision-media.ca>"
   , "dependencies": {
-      "connect": "1.7.x"
-    , "stylus": "0.15.x"
-    , "jade": "0.15.x"
-    , "commander": "0.0.4"
+      "connect": "1.8.x"
+    , "stylus": "*"
+    , "jade": "*"
+    , "commander": "0.4.1"
   }
   , "bin": { "serve": "./bin/serve" }
   , "engines": { "node": ">= 0.4.x < 0.7.0" }
