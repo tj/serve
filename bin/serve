@@ -59,7 +59,7 @@ if (program.jade) {
         var fn = jade.compile(str, { filename: file });
         str = fn();
         res.setHeader('Content-Type', 'text/html');
-        res.setHeader('Content-Length', str.length);
+        res.setHeader('Content-Length', Buffer.byteLength(str));
         res.end(str);
       } catch (err) {
         next(err);
