@@ -26,9 +26,10 @@ program
   .option('-J, --no-jade', 'disable jade rendering')
   .option('-I, --no-icons', 'disable icons')
   .option('-L, --no-logs', 'disable request logging')
-  .option('-D, --no-dirs', 'disable directory serving')
-  .option('-o, --open', 'open with browser')
-  .parse(process.argv);
+  .option('-D, --no-dirs', 'disable directory serving');
+
+if ('darwin' === process.platform) program.option('-o, --open', 'open with browser');
+program.parse(process.argv);
 
 // path
 var path = resolve(program.args.shift() || '.');
