@@ -26,6 +26,7 @@ program
   .option('-I, --no-icons', 'disable icons')
   .option('-L, --no-logs', 'disable request logging')
   .option('-D, --no-dirs', 'disable directory serving')
+  .option('-f, --favicon <path>', 'serve the given favicon')
   .parse(process.argv);
 
 // path
@@ -35,7 +36,7 @@ var path = resolve(program.args.shift() || '.');
 var server = connect();
 
 // ignore favicon
-server.use(connect.favicon());
+server.use(connect.favicon(program.favicon));
 
 // logger
 if (program.logs) server.use(connect.logger(program.format));
