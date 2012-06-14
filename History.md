@@ -1,4 +1,11 @@
 
+1.1.0 / 2012-06-14 
+==================
+
+  * Added -f, --favicon <path>
+  * Fixed length calculation for utf8 jade.
+  * Fixed Content-Type for rendered jade.
+
 1.0.3 / 2012-02-18 
 ==================
 
