@@ -10,6 +10,7 @@ var resolve = require('path').resolve
   , connect = require('connect')
   , stylus = require('stylus')
   , jade = require('jade')
+  , opener = require('opener')
   , url = require('url')
   , fs = require('fs');
 
@@ -27,6 +28,7 @@ program
   .option('-L, --no-logs', 'disable request logging')
   .option('-D, --no-dirs', 'disable directory serving')
   .option('-f, --favicon <path>', 'serve the given favicon')
+  .option('-o, --open', 'open with your browser')
   .parse(process.argv);
 
 // path
@@ -87,5 +89,6 @@ if (program.dirs) {
 // start the server
 server.listen(program.port, function () {
   console.log('\033[90mserving \033[36m%s\033[90m on port \033[96m%d\033[0m', path, program.port);
+  if (program.open) opener('http://localhost' + ':' + program.port);
 });
 
