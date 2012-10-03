@@ -9,6 +9,7 @@ var resolve = require('path').resolve
   , program = require('commander')
   , connect = require('connect')
   , stylus = require('stylus')
+  , nib = require('nib')
   , jade = require('jade')
   , url = require('url')
   , fs = require('fs');
@@ -22,6 +23,7 @@ program
   .option('-p, --port <port>', 'specify the port [3000]', Number, 3000)
   .option('-H, --hidden', 'enable hidden file serving')
   .option('-S, --no-stylus', 'disable stylus rendering')
+  .option('-N, --no-nib', 'disable nib rendering')
   .option('-J, --no-jade', 'disable jade rendering')
   .option('-I, --no-icons', 'disable icons')
   .option('-L, --no-logs', 'disable request logging')
@@ -70,7 +72,13 @@ if (program.jade) {
 }
 
 // stylus
-server.use(stylus.middleware({ src: path }));
+function compile(str, path) {
+  return stylus(str)
+    .set('filename', path)
+    .set('compress', true)
+    .use(nib());
+}
+server.use(stylus.middleware({ src: path, compile: compile }));
 
 // static files
 server.use(connect.static(path, { hidden: program.hidden }));
