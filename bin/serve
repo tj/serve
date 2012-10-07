@@ -9,7 +9,9 @@ var resolve = require('path').resolve
   , program = require('commander')
   , connect = require('connect')
   , stylus = require('stylus')
+  , nib = require('nib')
   , jade = require('jade')
+  , iced = require('iced-coffee-script')
   , url = require('url')
   , fs = require('fs');
 
@@ -19,10 +21,14 @@ program
   .version('1.1.0')
   .usage('[options] [dir]')
   .option('-F, --format <fmt>', 'specify the log format string', 'dev')
+  .option('-i, --index <url>', 'specify the start page')
+  .option('-b, --backend <path>', 'specify a backend script exporting a run(server) function')
   .option('-p, --port <port>', 'specify the port [3000]', Number, 3000)
   .option('-H, --hidden', 'enable hidden file serving')
   .option('-S, --no-stylus', 'disable stylus rendering')
+  .option('-N, --no-nib', 'disable nib rendering')
   .option('-J, --no-jade', 'disable jade rendering')
+  .option('-C, --no-coffee', 'disable (Iced)CoffeeScript rendering')
   .option('-I, --no-icons', 'disable icons')
   .option('-L, --no-logs', 'disable request logging')
   .option('-D, --no-dirs', 'disable directory serving')
@@ -40,6 +46,19 @@ server.use(connect.favicon(program.favicon));
 
 // logger
 if (program.logs) server.use(connect.logger(program.format));
+
+if (program.backend) {
+  require(path + '/' + program.backend).run(server);
+}
+
+if (program.index) {
+  server.use(function(req, res, next){
+    if (req.url === '/') {
+      req.url = program.index;
+    }
+    return next();
+  });
+}
 
 // convert .styl to .css to trick stylus.middleware
 if (program.stylus) {
@@ -67,10 +86,29 @@ if (program.jade) {
       }
     });
   });
+
+  if (program.nib) {
+    // stylus nib rendering enabled
+    function compile(str, path) {
+      return stylus(str)
+        .set('filename', path)
+        .use(nib());
+    }
+    server.use(stylus.middleware({ src: path, compile: compile }));
+  } else {
+    server.use(stylus.middleware({ src: path }));
+  }
 }
 
-// stylus
-server.use(stylus.middleware({ src: path }));
+// coffeescript
+if (program.coffee) {
+  server.use(function(req, res, next){
+    if (!req.url.match(/\.coffee|\.iced$/)) return next();
+    var file = join(path, url.parse(req.url).pathname);
+    res.setHeader('Content-Type', 'application/x-javascript');
+    res.end(iced.compile(fs.readFileSync(file).toString()));
+  });
+}
 
 // static files
 server.use(connect.static(path, { hidden: program.hidden }));
