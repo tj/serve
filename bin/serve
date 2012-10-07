@@ -21,6 +21,8 @@ program
   .version('1.1.0')
   .usage('[options] [dir]')
   .option('-F, --format <fmt>', 'specify the log format string', 'dev')
+  .option('-i, --index <url>', 'specify the start page')
+  .option('-b, --backend <path>', 'specify a backend script')
   .option('-p, --port <port>', 'specify the port [3000]', Number, 3000)
   .option('-H, --hidden', 'enable hidden file serving')
   .option('-S, --no-stylus', 'disable stylus rendering')
@@ -44,6 +46,19 @@ server.use(connect.favicon(program.favicon));
 
 // logger
 if (program.logs) server.use(connect.logger(program.format));
+
+if (program.backend) {
+  require(path + '/' + program.backend).run(server);
+}
+
+if (program.index) {
+  server.use(function(req, res, next){
+    if (req.url === '/') {
+      req.url = program.index;
+    }
+    return next();
+  });
+}
 
 // convert .styl to .css to trick stylus.middleware
 if (program.stylus) {
