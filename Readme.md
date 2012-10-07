@@ -15,18 +15,20 @@ Usage: serve [options] [dir]
 
 Options:
 
-  -v, --version       output the version number
-  -F, --format <fmt>  specify the log format string
-  -p, --port <port>   specify the port [3000]
-  -H, --hidden        enable hidden file serving
-  -S, --no-stylus     disable stylus rendering
-  -N, --no-nib        disable nib rendering
-  -J, --no-jade       disable jade rendering
-  -C, --no-coffee     disable (Iced)CoffeeScript rendering
-  -I, --no-icons      disable icons
-  -L, --no-logs       disable request logging
-  -D, --no-dirs       disable directory serving
-  -h, --help          output usage information
+  -v, --version        output the version number
+  -F, --format <fmt>   specify the log format string
+  -i, --index <url>    specify the start page
+  -b, --backend <path> specify a backend script exporting a run(server) function
+  -p, --port <port>    specify the port [3000]
+  -H, --hidden         enable hidden file serving
+  -S, --no-stylus      disable stylus rendering
+  -N, --no-nib         disable nib rendering
+  -J, --no-jade        disable jade rendering
+  -C, --no-coffee      disable (Iced)CoffeeScript rendering
+  -I, --no-icons       disable icons
+  -L, --no-logs        disable request logging
+  -D, --no-dirs        disable directory serving
+  -h, --help           output usage information
 
 ```
 

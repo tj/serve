@@ -22,7 +22,7 @@ program
   .usage('[options] [dir]')
   .option('-F, --format <fmt>', 'specify the log format string', 'dev')
   .option('-i, --index <url>', 'specify the start page')
-  .option('-b, --backend <path>', 'specify a backend script')
+  .option('-b, --backend <path>', 'specify a backend script exporting a run(server) function')
   .option('-p, --port <port>', 'specify the port [3000]', Number, 3000)
   .option('-H, --hidden', 'enable hidden file serving')
   .option('-S, --no-stylus', 'disable stylus rendering')
