@@ -29,6 +29,7 @@ program
   .option('-L, --no-logs', 'disable request logging')
   .option('-D, --no-dirs', 'disable directory serving')
   .option('-f, --favicon <path>', 'serve the given favicon')
+  .option('-C, --cors', 'allows cross origin access serving')
   .parse(process.argv);
 
 // path
@@ -79,6 +80,17 @@ if (program.less) {
   server.use(less({ src: path }));
 }
 
+// CORS access for files
+if(program.cors) {
+  server.use(function(req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With, Accept, x-csrf-token, origin');
+    if(req.method === 'OPTIONS')
+      return res.status = 200, res.end();
+    return next();
+  });
+}
 // static files
 server.use(connect.static(path, { hidden: program.hidden }));
 
