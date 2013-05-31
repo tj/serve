@@ -116,7 +116,7 @@ function start(port){
       start(port);
     })
     .listen(port, function () {
-      console.log('\033[90mserving \033[36m%s\033[90m on port \033[96m%d\033[0m', path, port);
+      console.log('\033[90mserving \033[36m%s\033[90m on port \033[96m%d\033[0m', path, this.address().port);
     })
 }
 
