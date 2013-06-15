@@ -12,15 +12,18 @@ var resolve = require('path').resolve
   , jade = require('jade')
   , less = require('less-middleware')
   , url = require('url')
-  , fs = require('fs');
+  , fs = require('fs')
+  , http = require('http')
 
 // CLI
 
 program
-  .version('1.1.0')
+  .version(require('../package.json').version)
   .usage('[options] [dir]')
   .option('-F, --format <fmt>', 'specify the log format string', 'dev')
   .option('-p, --port <port>', 'specify the port [3000]', Number, 3000)
+  .option('-r, --retries <port>', 'specify the number of alternative ports to try', Number, 20)
+  .option('-m, --middleware <a,b,c>', 'extra middleware to use', list, [])
   .option('-H, --hidden', 'enable hidden file serving')
   .option('-S, --no-stylus', 'disable stylus rendering')
   .option('-J, --no-jade', 'disable jade rendering')
@@ -32,21 +35,36 @@ program
   .option('-C, --cors', 'allows cross origin access serving')
   .parse(process.argv);
 
+function list(arg){
+  return arg.split(',')
+}
+
 // path
 var path = resolve(program.args.shift() || '.');
 
-// setup the server
-var server = connect();
+// setup the app
+var app = connect();
 
 // ignore favicon
-server.use(connect.favicon(program.favicon));
+app.use(connect.favicon(program.favicon));
 
 // logger
-if (program.logs) server.use(connect.logger(program.format));
+if (program.logs) app.use(connect.logger(program.format));
+
+// extra middleware
+program.middleware.forEach(function(mw){
+  console.log(__dirname)
+  try {
+    mw = require(mw)
+  } catch (e) {
+    throw new Error('unable to load "'+mw+'" from ' + process.cwd())
+  }
+  app.use(mw)
+})
 
 // convert .styl to .css to trick stylus.middleware
 if (program.stylus) {
-  server.use(function(req, res, next){
+  app.use(function(req, res, next){
     req.url = req.url.replace(/\.styl$/, '.css');
     next();
   });
@@ -54,7 +72,7 @@ if (program.stylus) {
 
 // jade
 if (program.jade) {
-  server.use(function(req, res, next){
+  app.use(function(req, res, next){
     if (!req.url.match(/\.jade$/)) return next();
     var file = join(path, url.parse(req.url).pathname);
     fs.readFile(file, 'utf8', function(err, str){
@@ -73,16 +91,16 @@ if (program.jade) {
 }
 
 // stylus
-server.use(stylus.middleware({ src: path }));
+app.use(stylus.middleware({ src: path }));
 
 // less
 if (program.less) {
-  server.use(less({ src: path }));
+  app.use(less({ src: path }));
 }
 
 // CORS access for files
 if (program.cors) {
-  server.use(function(req, res, next){
+  app.use(function(req, res, next){
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With, Accept, x-csrf-token, origin');
@@ -91,19 +109,31 @@ if (program.cors) {
   });
 }
 // static files
-server.use(connect.static(path, { hidden: program.hidden }));
+app.use(connect.static(path, { hidden: program.hidden }));
 
 // directory serving
 
 if (program.dirs) {
-    server.use(connect.directory(path, {
+    app.use(connect.directory(path, {
       hidden: program.hidden
     , icons: program.icons
   }));
 }
 
-// start the server
-server.listen(program.port, function () {
-  console.log('\033[90mserving \033[36m%s\033[90m on port \033[96m%d\033[0m', path, program.port);
-});
+var max = program.port + program.retries;
 
+// start the server
+function start(port){
+  http.createServer(app)
+    .on('error', function(e){
+      if (e.message != 'listen EADDRINUSE') throw e;
+      if (port == max) throw new Error('can\'t find a free port');
+      console.log('\033[90mport \033[36m%d\033[90m is taken, trying \033[96m%d\033[0m', port, ++port);
+      start(port);
+    })
+    .listen(port, function () {
+      console.log('\033[90mserving \033[36m%s\033[90m on port \033[96m%d\033[0m', path, this.address().port);
+    })
+}
+
+start(program.port);
