@@ -18,11 +18,12 @@ var resolve = require('path').resolve
 // CLI
 
 program
-  .version('1.1.0')
+  .version(require('../package.json').version)
   .usage('[options] [dir]')
   .option('-F, --format <fmt>', 'specify the log format string', 'dev')
   .option('-p, --port <port>', 'specify the port [3000]', Number, 3000)
-  .option('-m, --max <port>', 'specify the number of alternative ports to try', Number, 20)
+  .option('-r, --retries <port>', 'specify the number of alternative ports to try', Number, 20)
+  .option('-m, --middleware <a,b,c>', 'extra middleware to use', list, [])
   .option('-H, --hidden', 'enable hidden file serving')
   .option('-S, --no-stylus', 'disable stylus rendering')
   .option('-J, --no-jade', 'disable jade rendering')
@@ -33,6 +34,10 @@ program
   .option('-f, --favicon <path>', 'serve the given favicon')
   .option('-C, --cors', 'allows cross origin access serving')
   .parse(process.argv);
+
+function list(arg){
+  return arg.split(',')
+}
 
 // path
 var path = resolve(program.args.shift() || '.');
@@ -45,6 +50,17 @@ app.use(connect.favicon(program.favicon));
 
 // logger
 if (program.logs) app.use(connect.logger(program.format));
+
+// extra middleware
+program.middleware.forEach(function(mw){
+  console.log(__dirname)
+  try {
+    mw = require(mw)
+  } catch (e) {
+    throw new Error('unable to load "'+mw+'" from ' + process.cwd())
+  }
+  app.use(mw)
+})
 
 // convert .styl to .css to trick stylus.middleware
 if (program.stylus) {
@@ -104,7 +120,7 @@ if (program.dirs) {
   }));
 }
 
-var max = program.port + program.max;
+var max = program.port + program.retries;
 
 // start the server
 function start(port){
@@ -112,7 +128,7 @@ function start(port){
     .on('error', function(e){
       if (e.message != 'listen EADDRINUSE') throw e;
       if (port == max) throw new Error('can\'t find a free port');
-      console.log('\033[90mport \033[36m%d\033[90m is taken, trying \033[96m%d\033[0m instead', port, ++port);
+      console.log('\033[90mport \033[36m%d\033[90m is taken, trying \033[96m%d\033[0m', port, ++port);
       start(port);
     })
     .listen(port, function () {
