@@ -53,10 +53,11 @@ if (program.logs) app.use(connect.logger(program.format));
 
 // extra middleware
 program.middleware.forEach(function(mw){
+  if (/^\./.test(mw)) mw = join(process.cwd(), mw)
   try {
     mw = require(mw)
   } catch (e) {
-    throw new Error('unable to load "'+mw+'" from ' + process.cwd())
+    throw new Error('unable to load "'+mw+'"')
   }
   app.use(mw)
 })
