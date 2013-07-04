@@ -17,7 +17,7 @@ var resolve = require('path').resolve
 // CLI
 
 program
-  .version('1.1.0')
+  .version('1.2.0')
   .usage('[options] [dir]')
   .option('-F, --format <fmt>', 'specify the log format string', 'dev')
   .option('-p, --port <port>', 'specify the port [3000]', Number, 3000)
@@ -30,6 +30,7 @@ program
   .option('-D, --no-dirs', 'disable directory serving')
   .option('-f, --favicon <path>', 'serve the given favicon')
   .option('-C, --cors', 'allows cross origin access serving')
+  .option('    --compress', 'gzip or deflate the response')
   .parse(process.argv);
 
 // path
@@ -90,6 +91,12 @@ if (program.cors) {
     next();
   });
 }
+
+// compression
+if (programm.compress) {
+  server.use(connect.compress());
+}
+
 // static files
 server.use(connect.static(path, { hidden: program.hidden }));
 
