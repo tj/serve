@@ -26,7 +26,7 @@ Options:
   -L, --no-logs       disable request logging
   -D, --no-dirs       disable directory serving
   -h, --help          output usage information
-
+      --compress      gzip or deflate the response
 ```
 
 ## Examples
