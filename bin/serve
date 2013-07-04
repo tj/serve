@@ -93,7 +93,7 @@ if (program.cors) {
 }
 
 // compression
-if (programm.compress) {
+if (program.compress) {
   server.use(connect.compress());
 }
 
