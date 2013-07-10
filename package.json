@@ -16,6 +16,8 @@
     , "jade": "*"
     , "less-middleware": "*"
     , "commander": "0.6.1"
+    , "tiny-lr": "~0.0.4"
+    , "gaze": "~0.4.1"
   }
   , "bin": { "serve": "./bin/serve" }
 }
