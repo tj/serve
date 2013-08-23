@@ -28,6 +28,7 @@ Options:
   -L, --no-logs        disable request logging
   -D, --no-dirs        disable directory serving
       --compress       gzip or deflate the response
+      --exec <cmd>     execute command on each request
   -h, --help           output usage information
 ```
 
