@@ -6,6 +6,7 @@
 
 var resolve = require('path').resolve
   , join = require('path').join
+  , exec = require('child_process').exec
   , program = require('commander')
   , connect = require('connect')
   , stylus = require('stylus')
@@ -31,6 +32,7 @@ program
   .option('-f, --favicon <path>', 'serve the given favicon')
   .option('-C, --cors', 'allows cross origin access serving')
   .option('    --compress', 'gzip or deflate the response')
+  .option('    --exec <cmd>', 'execute command on each request')
   .parse(process.argv);
 
 // path
@@ -95,6 +97,13 @@ if (program.cors) {
 // compression
 if (program.compress) {
   server.use(connect.compress());
+}
+
+// exec command
+if (program.exec) {
+  server.use(function (req, res, next){
+    exec(program.exec, next);
+  });
 }
 
 // static files
