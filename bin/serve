@@ -18,7 +18,7 @@ var resolve = require('path').resolve
 // CLI
 
 program
-  .version('1.2.0')
+  .version(require('../package.json').version)
   .usage('[options] [dir]')
   .option('-F, --format <fmt>', 'specify the log format string', 'dev')
   .option('-p, --port <port>', 'specify the port [3000]', Number, 3000)
