@@ -39,87 +39,97 @@ program
 var path = resolve(program.args.shift() || '.');
 
 // setup the server
-var server = connect();
+function createServer(cb) {
+  var server = connect();
 
-// ignore favicon
-server.use(connect.favicon(program.favicon));
+  // prioritize external usage
+  cb && cb(server);
 
-// logger
-if (program.logs) server.use(connect.logger(program.format));
+  // ignore favicon
+  server.use(connect.favicon(program.favicon));
 
-// convert .styl to .css to trick stylus.middleware
-if (program.stylus) {
-  server.use(function(req, res, next){
-    req.url = req.url.replace(/\.styl$/, '.css');
-    next();
-  });
-}
+  // logger
+  if (program.logs) server.use(connect.logger(program.format));
 
-// jade
-if (program.jade) {
-  server.use(function(req, res, next){
-    if (!req.url.match(/\.jade$/)) return next();
-    var file = join(path, url.parse(req.url).pathname);
-    fs.readFile(file, 'utf8', function(err, str){
-      if (err) return next(err);
-      try {
-        var fn = jade.compile(str, { filename: file });
-        str = fn();
-        res.setHeader('Content-Type', 'text/html');
-        res.setHeader('Content-Length', Buffer.byteLength(str));
-        res.end(str);
-      } catch (err) {
-        next(err);
-      }
+  // convert .styl to .css to trick stylus.middleware
+  if (program.stylus) {
+    server.use(function(req, res, next){
+      req.url = req.url.replace(/\.styl$/, '.css');
+      next();
     });
-  });
-}
+  }
 
-// stylus
-server.use(stylus.middleware({ src: path }));
+  // jade
+  if (program.jade) {
+    server.use(function(req, res, next){
+      if (!req.url.match(/\.jade$/)) return next();
+      var file = join(path, url.parse(req.url).pathname);
+      fs.readFile(file, 'utf8', function(err, str){
+        if (err) return next(err);
+        try {
+          var fn = jade.compile(str, { filename: file });
+          str = fn();
+          res.setHeader('Content-Type', 'text/html');
+          res.setHeader('Content-Length', Buffer.byteLength(str));
+          res.end(str);
+        } catch (err) {
+          next(err);
+        }
+      });
+    });
+  }
 
-// less
-if (program.less) {
-  server.use(less({ src: path }));
-}
+  // stylus
+  server.use(stylus.middleware({ src: path }));
 
-// CORS access for files
-if (program.cors) {
-  server.use(function(req, res, next){
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With, Accept, x-csrf-token, origin');
-    if ('OPTIONS' == req.method) return res.end();
-    next();
-  });
-}
+  // less
+  if (program.less) {
+    server.use(less({ src: path }));
+  }
 
-// compression
-if (program.compress) {
-  server.use(connect.compress());
-}
+  // CORS access for files
+  if (program.cors) {
+    server.use(function(req, res, next){
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+      res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With, Accept, x-csrf-token, origin');
+      if ('OPTIONS' == req.method) return res.end();
+      next();
+    });
+  }
 
-// exec command
-if (program.exec) {
-  server.use(function (req, res, next){
-    exec(program.exec, next);
-  });
-}
+  // compression
+  if (program.compress) {
+    server.use(connect.compress());
+  }
 
-// static files
-server.use(connect.static(path, { hidden: program.hidden }));
+  // exec command
+  if (program.exec) {
+    server.use(function (req, res, next){
+      exec(program.exec, next);
+    });
+  }
 
-// directory serving
+  // static files
+  server.use(connect.static(path, { hidden: program.hidden }));
 
-if (program.dirs) {
+  // directory serving
+
+  if (program.dirs) {
     server.use(connect.directory(path, {
       hidden: program.hidden
-    , icons: program.icons
-  }));
+      , icons: program.icons
+    }));
+  }
+
+  // start the server
+  return server.listen(program.port, function () {
+    console.log('\033[90mserving \033[36m%s\033[90m on port \033[96m%d\033[0m', path, program.port);
+  });
 }
 
-// start the server
-server.listen(program.port, function () {
-  console.log('\033[90mserving \033[36m%s\033[90m on port \033[96m%d\033[0m', path, program.port);
-});
+module.exports = createServer;
 
+if (!module.parent) {
+  createServer();
+}
