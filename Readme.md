@@ -59,6 +59,19 @@ Options:
 
   ![directory listings](http://f.cl.ly/items/100M2C3o0p2u3A0q1o3H/Screenshot.png)
 
+## API
+
+If you need to extend the server object with your custom logic you can use serve programmatically. Perhaps add extra middleware but before anyone else has a chance to intercept a request. Perhaps attach some websocket layer ontop of what you are serving for extra functionality.
+
+```js
+require('serve')(function (server) {
+  server.use(function (req, res, next) {
+    console.log('first chance intercepting any resource');
+    next();
+  });
+});
+```
+
 ## License 
 
 (The MIT License)
