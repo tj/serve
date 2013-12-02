@@ -20,6 +20,7 @@ var resolve = require('path').resolve
 program
   .version(require('../package.json').version)
   .usage('[options] [dir]')
+  .option('-a, --auth <user>:<pass>', 'specify basic auth credentials')
   .option('-F, --format <fmt>', 'specify the log format string', 'dev')
   .option('-p, --port <port>', 'specify the port [3000]', Number, 3000)
   .option('-H, --hidden', 'enable hidden file serving')
@@ -40,6 +41,15 @@ var path = resolve(program.args.shift() || '.');
 
 // setup the server
 var server = connect();
+
+// basic auth
+
+if (program.auth) {
+  var user = program.auth.split(':')[0];
+  var pass = program.auth.split(':')[1];
+  if (!user || !pass) throw new Error('user and pass required');
+  server.use(connect.basicAuth(user, pass));
+}
 
 // ignore favicon
 server.use(connect.favicon(program.favicon));
