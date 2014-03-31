@@ -13,7 +13,8 @@ var resolve = require('path').resolve
   , jade = require('jade')
   , less = require('less-middleware')
   , url = require('url')
-  , fs = require('fs');
+  , fs = require('fs')
+  , https = require('https');
 
 // CLI
 
@@ -23,6 +24,7 @@ program
   .option('-a, --auth <user>:<pass>', 'specify basic auth credentials')
   .option('-F, --format <fmt>', 'specify the log format string', 'dev')
   .option('-p, --port <port>', 'specify the port [3000]', Number, 3000)
+  .option('    --https-port <port>', 'specify the port [3443]', Number, 3443)
   .option('-H, --hidden', 'enable hidden file serving')
   .option('-S, --no-stylus', 'disable stylus rendering')
   .option('-J, --no-jade', 'disable jade rendering')
@@ -32,6 +34,10 @@ program
   .option('-D, --no-dirs', 'disable directory serving')
   .option('-f, --favicon <path>', 'serve the given favicon')
   .option('-C, --cors', 'allows cross origin access serving')
+  .option('-s, --https', 'also serve over https')
+  .option('    --key', 'key file path for https')
+  .option('    --cert', 'certificate file for https')
+  .option('    --ca', 'CA certificate file for https')
   .option('    --compress', 'gzip or deflate the response')
   .option('    --exec <cmd>', 'execute command on each request')
   .parse(process.argv);
@@ -133,3 +139,79 @@ server.listen(program.port, function () {
   console.log('\033[90mserving \033[36m%s\033[90m on port \033[96m%d\033[0m', path, program.port);
 });
 
+// if requested, setup https server as well
+if (program.https) {
+
+  var httpsOptions = {
+    keytype: 'rsa:2048',
+    days: 365,
+    keyFile: null,
+    certFile: null,
+    caFile: null
+  };
+
+  // once https is ready to start...
+  var httpsReady = function () {
+    var options = {
+      key: fs.readFileSync(httpsOptions.keyFile),
+      cert: fs.readFileSync(httpsOptions.certFile),
+      requestCert: true,
+      rejectUnauthorized: false
+    };
+    if (httpsOptions.caFile) {
+      options.ca = fs.readFileSync(httpsOptions.caFile);
+    }
+
+    var httpsServer = https.createServer(options, server)
+
+    // start the http server
+    httpsServer.listen(program.httpsPort, function () {
+      console.log('\033[90mserving \033[36m%s\033[90m on port \033[96m%d\033[0m', path, program.httpsPort);
+    });
+  };
+
+  // if passed, skip generation
+  if (program.key && program.cert) {
+    httpsOptions.keyFile = program.key;
+    httpsOptions.certFile = program.cert;
+    httpsOptions.caFile = program.ca;
+    httpsReady();
+  }
+  else {
+    httpsOptions.keyFile = '.serve.key';
+    httpsOptions.certFile = '.serve.crt';
+
+    var params = {
+      C: 'US',
+      ST: 'Test State',
+      L: 'Test Locality',
+      O: 'Org Name',
+      OU: 'Org Unit Name',
+      CN: 'localhost',
+      emailAddress: 'test'
+    };
+    var subj = '';
+    for (key in params) {
+      if (!params.hasOwnProperty(key)) continue;
+      subj += '/' + key + '=' + params[key];
+    }
+
+    // call openssl to generate keys
+    var cmd = 'openssl req ' +
+      ' -new -newkey ' + httpsOptions.keytype +
+      ' -days ' + httpsOptions.days +
+      ' -x509 ' +
+      ' -nodes ' +
+      ' -subj "' + subj + '"' +
+      ' -keyout ' + httpsOptions.keyFile +
+      ' -out ' + httpsOptions.certFile;
+
+    exec(cmd, function (err, stderr, stdout) {
+      if (err) throw err;
+      if (stderr) throw new Error(stderr);
+      httpsReady();
+    });
+
+  }
+
+}
