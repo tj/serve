@@ -12,6 +12,9 @@ var resolve = require('path').resolve
   , stylus = require('stylus')
   , jade = require('jade')
   , less = require('less-middleware')
+  , tinylr = require('tiny-lr')
+  , livereload = require('connect-livereload')
+  , watch = require('watch')
   , url = require('url')
   , fs = require('fs');
 
@@ -33,6 +36,8 @@ program
   .option('-f, --favicon <path>', 'serve the given favicon')
   .option('-C, --cors', 'allows cross origin access serving')
   .option('    --compress', 'gzip or deflate the response')
+  .option('    --live', 'enable live-reload service')
+  .option('    --live-port <port>', 'change live-reload service port [35729]', Number, 35729)
   .option('    --exec <cmd>', 'execute command on each request')
   .parse(process.argv);
 
@@ -107,6 +112,20 @@ if (program.cors) {
 // compression
 if (program.compress) {
   server.use(connect.compress());
+}
+
+// livereload
+if (program.live) {
+  // Provide service
+  var lrserver = tinylr();
+  lrserver.listen(program.livePort, function() {
+    console.log('\033[90mprovide livereload service on port \033[96m%d\033[0m', program.livePort);
+  });
+  server.use(livereload({ port: program.livePort }));
+  // Watch and notify client
+  watch.watchTree(path, { ignoreDotFiles: !program.hidden }, function(file) {
+    lrserver.changed({ body: { files: [ file ] }});
+  });
 }
 
 // exec command
