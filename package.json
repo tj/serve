@@ -14,7 +14,7 @@
       "connect": "2.3.x"
     , "stylus": "*"
     , "jade": "*"
-    , "less-middleware": "*"
+    , "less-middleware": "0.1.x"
     , "commander": "0.6.1"
   }
   , "bin": { "serve": "./bin/serve" }
