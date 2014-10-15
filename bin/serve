@@ -23,6 +23,7 @@ program
   .option('-a, --auth <user>:<pass>', 'specify basic auth credentials')
   .option('-F, --format <fmt>', 'specify the log format string', 'dev')
   .option('-p, --port <port>', 'specify the port [3000]', Number, 3000)
+  .option('-i, --ip <hostname>', 'ip or hostname to listen on [0.0.0.0]', '0.0.0.0')
   .option('-H, --hidden', 'enable hidden file serving')
   .option('-S, --no-stylus', 'disable stylus rendering')
   .option('-J, --no-jade', 'disable jade rendering')
@@ -129,7 +130,7 @@ if (program.dirs) {
 }
 
 // start the server
-server.listen(program.port, function () {
-  console.log('\033[90mserving \033[36m%s\033[90m on port \033[96m%d\033[0m', path, program.port);
+server.listen(program.port, program.ip, function () {
+  console.log('\033[90mserving \033[36m%s\033[90m on \033[32m%s\033[90m:\033[96m%d\033[0m', path, program.ip, program.port);
 });
 
