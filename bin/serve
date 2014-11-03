@@ -22,7 +22,7 @@ program
   .usage('[options] [dir]')
   .option('-a, --auth <user>:<pass>', 'specify basic auth credentials')
   .option('-F, --format <fmt>', 'specify the log format string', 'dev')
-  .option('-p, --port <port>', 'specify the port [3000]', Number, 3000)
+  .option('-p, --port <port>', 'specify the port [process.env.PORT || 3000]', Number, process.env.PORT || 3000)
   .option('-H, --hidden', 'enable hidden file serving')
   .option('-S, --no-stylus', 'disable stylus rendering')
   .option('-J, --no-jade', 'disable jade rendering')
