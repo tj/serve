@@ -13,7 +13,8 @@ var resolve = require('path').resolve
   , jade = require('jade')
   , less = require('less-middleware')
   , url = require('url')
-  , fs = require('fs');
+  , fs = require('fs')
+  , sass = require('node-sass-middleware');
 
 // CLI
 
@@ -24,8 +25,9 @@ program
   .option('-F, --format <fmt>', 'specify the log format string', 'dev')
   .option('-p, --port <port>', 'specify the port [3000]', Number, 3000)
   .option('-H, --hidden', 'enable hidden file serving')
-  .option('-S, --no-stylus', 'disable stylus rendering')
   .option('-J, --no-jade', 'disable jade rendering')
+  .option('-S, --no-stylus', 'disable stylus rendering')
+  .option('    --no-sass', 'disable sass css rendering')
   .option('    --no-less', 'disable less css rendering')
   .option('-I, --no-icons', 'disable icons')
   .option('-L, --no-logs', 'disable request logging')
@@ -65,6 +67,14 @@ if (program.stylus) {
   });
 }
 
+// convert .scss to .css to trick sass-middleware
+if (program.sass) {
+  server.use(function(req, res, next){
+    req.url = req.url.replace(/\.scss$/, '.css');
+    next();
+  });
+}
+
 // jade
 if (program.jade) {
   server.use(function(req, res, next){
@@ -91,6 +101,16 @@ server.use(stylus.middleware({ src: path }));
 // less
 if (program.less) {
   server.use(less(path));
+}
+
+// sass
+if (program.sass) {
+  server.use(sass({
+    src: path,
+    dest: path,
+    debug: false,
+    outputStyle: 'expanded'
+  }));
 }
 
 // CORS access for files
@@ -132,4 +152,3 @@ if (program.dirs) {
 server.listen(program.port, function () {
   console.log('\033[90mserving \033[36m%s\033[90m on port \033[96m%d\033[0m', path, program.port);
 });
-
