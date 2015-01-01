@@ -15,6 +15,7 @@
     , "stylus": "*"
     , "jade": "*"
     , "less-middleware": "0.1.x"
+    , "node-sass-middleware": "*"
     , "commander": "0.6.1"
   }
   , "bin": { "serve": "./bin/serve" }
