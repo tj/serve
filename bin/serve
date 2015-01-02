@@ -4,16 +4,14 @@
  * Module dependencies.
  */
 
-var resolve = require('path').resolve
-  , join = require('path').join
+var connect = require('connect')
   , exec = require('child_process').exec
+  , fs = require('fs')
+  , join = require('path').join
   , program = require('commander')
-  , connect = require('connect')
-  , stylus = require('stylus')
-  , jade = require('jade')
-  , less = require('less-middleware')
-  , url = require('url')
-  , fs = require('fs');
+  , resolve = require('path').resolve
+  , terraform = require('terraform')
+  , url = require('url');
 
 // CLI
 
@@ -24,9 +22,17 @@ program
   .option('-F, --format <fmt>', 'specify the log format string', 'dev')
   .option('-p, --port <port>', 'specify the port [3000]', Number, 3000)
   .option('-H, --hidden', 'enable hidden file serving')
-  .option('-S, --no-stylus', 'disable stylus rendering')
+
   .option('-J, --no-jade', 'disable jade rendering')
+  .option('    --no-ejs', 'disable ejs rendering')
+  .option('    --no-markdown', 'disable markdown rendering')
+
   .option('    --no-less', 'disable less css rendering')
+  .option('    --no-sass', 'disable sass/scss css rendering')
+  .option('-S, --no-stylus', 'disable stylus rendering')
+
+  .option('-C, --no-coffee', 'disable CoffeeScript rendering')
+
   .option('-I, --no-icons', 'disable icons')
   .option('-L, --no-logs', 'disable request logging')
   .option('-D, --no-dirs', 'disable directory serving')
@@ -38,6 +44,7 @@ program
 
 // path
 var path = resolve(program.args.shift() || '.');
+var terra = terraform.root(path);
 
 // setup the server
 var server = connect();
@@ -57,40 +64,66 @@ server.use(connect.favicon(program.favicon));
 // logger
 if (program.logs) server.use(connect.logger(program.format));
 
-// convert .styl to .css to trick stylus.middleware
-if (program.stylus) {
-  server.use(function(req, res, next){
-    req.url = req.url.replace(/\.styl$/, '.css');
-    next();
-  });
+// check if a url requests a html superset format
+function isHtmlSuperset (url) {
+  return url.match(/\.jade$/)
+      || url.match(/\.ejs$/)
+      || url.match(/\.md$/);
 }
 
-// jade
-if (program.jade) {
-  server.use(function(req, res, next){
-    if (!req.url.match(/\.jade$/)) return next();
-    var file = join(path, url.parse(req.url).pathname);
-    fs.readFile(file, 'utf8', function(err, str){
-      if (err) return next(err);
-      try {
-        var fn = jade.compile(str, { filename: file });
-        str = fn();
-        res.setHeader('Content-Type', 'text/html');
-        res.setHeader('Content-Length', Buffer.byteLength(str));
-        res.end(str);
-      } catch (err) {
-        next(err);
-      }
+// handle HTML supersets
+if (program.jade || program.ejs || program.markdown) {
+  server.use(function (req, res, next) {
+    if (!isHtmlSuperset(req.url)) return next();
+    var path = url.parse(req.url).pathname.slice(1);
+    terra.render(path, function (err, body) {
+      if (err) throw err;
+      res.setHeader('Content-Type', 'text/html');
+      res.setHeader('Content-Length', Buffer.byteLength(body));
+      res.end(body);
     });
   });
 }
 
-// stylus
-server.use(stylus.middleware({ src: path }));
+// check if a url requests a css superset format
+function isCssSuperset (url) {
+  return url.match(/\.less$/)
+      || url.match(/\.sass$/)
+      || url.match(/\.scss$/)
+      || url.match(/\.styl$/);
+}
 
-// less
-if (program.less) {
-  server.use(less(path));
+// handle CSS supersets
+if (program.less || program.sass || program.stylus) {
+  server.use(function (req, res, next) {
+    if (!isCssSuperset(req.url)) return next();
+    var path = url.parse(req.url).pathname.slice(1);
+    terra.render(path, function (err, body) {
+      if (err) throw err;
+      res.setHeader('Content-Type', 'text/css');
+      res.setHeader('Content-Length', Buffer.byteLength(body));
+      res.end(body);
+    });
+  });
+}
+
+// check if a url requests a js superset format
+function isJsSuperset (url) {
+  return url.match(/\.coffee$/);
+}
+
+// handle JavaScript supersets
+if (program.coffee) {
+  server.use(function (req, res, next) {
+    if (!isJsSuperset(req.url)) return next();
+    var path = url.parse(req.url).pathname.slice(1);
+    terra.render(path, function (err, body) {
+      if (err) throw err;
+      res.setHeader('Content-Type', 'application/x-javascript');
+      res.setHeader('Content-Length', Buffer.byteLength(body));
+      res.end(body);
+    });
+  });
 }
 
 // CORS access for files
@@ -99,7 +132,7 @@ if (program.cors) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With, Accept, x-csrf-token, origin');
-    if ('OPTIONS' == req.method) return res.end();
+    if ('OPTIONS' === req.method) return res.end();
     next();
   });
 }
@@ -132,4 +165,3 @@ if (program.dirs) {
 server.listen(program.port, function () {
   console.log('\033[90mserving \033[36m%s\033[90m on port \033[96m%d\033[0m', path, program.port);
 });
-
