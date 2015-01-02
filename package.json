@@ -12,9 +12,7 @@
   }
   , "dependencies": {
       "connect": "2.3.x"
-    , "stylus": "*"
-    , "jade": "*"
-    , "less-middleware": "0.1.x"
+    , "terraform": "*"
     , "commander": "0.6.1"
   }
   , "bin": { "serve": "./bin/serve" }
