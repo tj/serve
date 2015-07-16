@@ -12,6 +12,7 @@ var resolve = require('path').resolve
   , stylus = require('stylus')
   , jade = require('jade')
   , less = require('less-middleware')
+  , sass = require('sass-middleware')
   , url = require('url')
   , fs = require('fs');
 
@@ -27,6 +28,7 @@ program
   .option('-S, --no-stylus', 'disable stylus rendering')
   .option('-J, --no-jade', 'disable jade rendering')
   .option('    --no-less', 'disable less css rendering')
+  .option('    --no-sass', 'disable sass css rendering')
   .option('-I, --no-icons', 'disable icons')
   .option('-L, --no-logs', 'disable request logging')
   .option('-D, --no-dirs', 'disable directory serving')
@@ -91,6 +93,11 @@ server.use(stylus.middleware({ src: path }));
 // less
 if (program.less) {
   server.use(less(path));
+}
+
+// sass
+if (program.sass) {
+  server.use(sass({ src: path }));
 }
 
 // CORS access for files
