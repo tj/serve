@@ -12,7 +12,7 @@ var resolve = require('path').resolve
   , stylus = require('stylus')
   , jade = require('jade')
   , less = require('less-middleware')
-  , sass = require('sass-middleware')
+  , sass = require('node-sass-middleware')
   , url = require('url')
   , fs = require('fs');
 
