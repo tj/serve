@@ -23,6 +23,7 @@ Options:
   -C, --cors           allows cross origin access serving
   -S, --no-stylus      disable stylus rendering
   -J, --no-jade        disable jade rendering
+      --no-coffee      disable coffee script rendering
       --no-less        disable less css rendering
   -I, --no-icons       disable icons
   -L, --no-logs        disable request logging

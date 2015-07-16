@@ -11,6 +11,7 @@ var resolve = require('path').resolve
   , connect = require('connect')
   , stylus = require('stylus')
   , jade = require('jade')
+  , coffee = require('connect-coffee-script')
   , less = require('less-middleware')
   , url = require('url')
   , fs = require('fs');
@@ -26,6 +27,7 @@ program
   .option('-H, --hidden', 'enable hidden file serving')
   .option('-S, --no-stylus', 'disable stylus rendering')
   .option('-J, --no-jade', 'disable jade rendering')
+  .option('    --no-coffee', 'disable coffee script rendering')
   .option('    --no-less', 'disable less css rendering')
   .option('-I, --no-icons', 'disable icons')
   .option('-L, --no-logs', 'disable request logging')
@@ -84,6 +86,9 @@ if (program.jade) {
     });
   });
 }
+
+// coffee script
+server.use(coffee({ src: path }));
 
 // stylus
 server.use(stylus.middleware({ src: path }));
