@@ -9,6 +9,7 @@ var resolve = require('path').resolve
   , exec = require('child_process').exec
   , program = require('commander')
   , connect = require('connect')
+  , open = require('open')
   , stylus = require('stylus')
   , jade = require('jade')
   , less = require('less-middleware')
@@ -32,6 +33,7 @@ program
   .option('    --no-less', 'disable less css rendering')
   .option('-I, --no-icons', 'disable icons')
   .option('-L, --no-logs', 'disable request logging')
+  .option('-o, --open', 'automatically opens a browser window to this server')
   .option('-D, --no-dirs', 'disable directory serving')
   .option('-f, --favicon <path>', 'serve the given favicon')
   .option('-C, --cors', 'allows cross origin access serving')
@@ -136,11 +138,6 @@ if (program.dirs) {
   }));
 }
 
-// start the server
-server.listen(program.port, function () {
-  console.log('\033[90mserving \033[36m%s\033[90m on port \033[96m%d\033[0m', path, program.port);
-});
-
 // if requested, setup https server as well
 if (program.https) {
 
@@ -217,3 +214,13 @@ if (program.https) {
   }
 
 }
+
+// start the server
+server.listen(program.port, function () {
+  console.log('\033[90mserving \033[36m%s\033[90m on port \033[96m%d\033[0m', path, program.port);
+
+  // open the browser window to this server
+  if (program.open) {
+    open('http://127.0.0.1' + (~~program.port > 0 && ~~program.port < 65536 ? ':' + ~~program.port : ''));
+  }
+});

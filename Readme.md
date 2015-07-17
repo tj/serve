@@ -30,6 +30,7 @@ Options:
   -D, --no-dirs             disable directory serving
   -f, --favicon <path>      serve the given favicon
   -C, --cors                allows cross origin access serving
+  -o, --open           opens a browser window to this server
   -s, --https               also serve over https
       --key                 key file path for https
       --cert                certificate file for https
