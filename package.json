@@ -12,6 +12,7 @@
   }
   , "dependencies": {
       "connect": "2.3.x"
+    , "open": "0.0.x"
     , "stylus": "*"
     , "jade": "*"
     , "less-middleware": "*"
