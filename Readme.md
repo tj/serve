@@ -26,6 +26,7 @@ Options:
       --no-less        disable less css rendering
   -I, --no-icons       disable icons
   -L, --no-logs        disable request logging
+  -o, --open           opens a browser window to this server
   -D, --no-dirs        disable directory serving
       --compress       gzip or deflate the response
       --exec <cmd>     execute command on each request
