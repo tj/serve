@@ -37,6 +37,10 @@ program
   .option('    --stack', 'print stack trace instead of nice errors')
   .parse(process.argv);
 
+var ServerError = function(){
+  
+};
+
 // path
 var path = resolve(program.args.shift() || '.');
 
@@ -131,9 +135,9 @@ if (program.dirs) {
 // error handling
 if (!program.stack) {
   server.use(function(err, req, res, next){
-    switch (err.name) {
+    switch (err.code) {
       case ('EADDRINUSE') {
-        
+        console.log('error: port %s is already in use', err.port);
       }
     }
     next();
