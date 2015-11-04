@@ -34,7 +34,7 @@ program
   .option('-C, --cors', 'allows cross origin access serving')
   .option('    --compress', 'gzip or deflate the response')
   .option('    --exec <cmd>', 'execute command on each request')
-  .option('    --stack', 'print stack trace instead of nice errors')
+  .option('    --stack', 'output stack trace of errors')
   .parse(process.argv);
 
 // path
