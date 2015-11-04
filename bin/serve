@@ -34,6 +34,7 @@ program
   .option('-C, --cors', 'allows cross origin access serving')
   .option('    --compress', 'gzip or deflate the response')
   .option('    --exec <cmd>', 'execute command on each request')
+  .option('    --stack', 'print stack trace instead of nice errors')
   .parse(process.argv);
 
 // path
@@ -120,12 +121,23 @@ if (program.exec) {
 server.use(connect.static(path, { hidden: program.hidden }));
 
 // directory serving
-
 if (program.dirs) {
     server.use(connect.directory(path, {
       hidden: program.hidden
     , icons: program.icons
   }));
+}
+
+// error handling
+if (!program.stack) {
+  server.use(function(err, req, res, next){
+    switch (err.name) {
+      case ('EADDRINUSE') {
+        
+      }
+    }
+    next();
+  });
 }
 
 // start the server
