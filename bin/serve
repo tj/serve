@@ -37,10 +37,6 @@ program
   .option('    --stack', 'print stack trace instead of nice errors')
   .parse(process.argv);
 
-var ServerError = function(){
-  
-};
-
 // path
 var path = resolve(program.args.shift() || '.');
 
