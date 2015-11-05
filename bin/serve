@@ -65,6 +65,7 @@ if (program.logs) server.use(connect.logger(program.format));
 
 // convert .styl to .css to trick stylus.middleware
 if (program.stylus) {
+  server.use(stylus.middleware({ src: path }));
   server.use(function(req, res, next){
     req.url = req.url.replace(/\.styl$/, '.css');
     next();
@@ -90,9 +91,6 @@ if (program.jade) {
     });
   });
 }
-
-// stylus
-server.use(stylus.middleware({ src: path }));
 
 // less
 if (program.less) {
