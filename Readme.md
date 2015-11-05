@@ -29,6 +29,7 @@ Options:
   -D, --no-dirs        disable directory serving
       --compress       gzip or deflate the response
       --exec <cmd>     execute command on each request
+      --stack          output stack trace of errors
   -h, --help           output usage information
 ```
 
