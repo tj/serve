@@ -24,6 +24,7 @@ Options:
   -S, --no-stylus      disable stylus rendering
   -J, --no-jade        disable jade rendering
       --no-less        disable less css rendering
+      --no-sass        disable sass css rendering
   -I, --no-icons       disable icons
   -L, --no-logs        disable request logging
   -D, --no-dirs        disable directory serving
