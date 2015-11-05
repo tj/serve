@@ -16,6 +16,9 @@
     , "jade": "*"
     , "less-middleware": "0.1.x"
     , "commander": "0.6.1"
+    , "connect-livereload": "*"
+    , "tiny-lr": "*"
+    , "watch": "*"
   }
   , "bin": { "serve": "./bin/serve" }
 }

@@ -15,21 +15,23 @@ Usage: serve [options] [dir]
 
 Options:
 
-  -v, --version        output the version number
-  -F, --format <fmt>   specify the log format string
-  -p, --port <port>    specify the port [3000]
-  -f, --favicon <path> serve the given favicon
-  -H, --hidden         enable hidden file serving
-  -C, --cors           allows cross origin access serving
-  -S, --no-stylus      disable stylus rendering
-  -J, --no-jade        disable jade rendering
-      --no-less        disable less css rendering
-  -I, --no-icons       disable icons
-  -L, --no-logs        disable request logging
-  -D, --no-dirs        disable directory serving
-      --compress       gzip or deflate the response
-      --exec <cmd>     execute command on each request
-  -h, --help           output usage information
+  -v, --version          output the version number
+  -F, --format <fmt>     specify the log format string
+  -p, --port <port>      specify the port [3000]
+  -f, --favicon <path>   serve the given favicon
+  -H, --hidden           enable hidden file serving
+  -C, --cors             allows cross origin access serving
+  -S, --no-stylus        disable stylus rendering
+  -J, --no-jade          disable jade rendering
+      --no-less          disable less css rendering
+  -I, --no-icons         disable icons
+  -L, --no-logs          disable request logging
+  -D, --no-dirs          disable directory serving
+      --compress         gzip or deflate the response
+      --live             enable live-reload service')
+      --live-port <port> change live-reload service port [35729]', Number, 35729)
+      --exec <cmd>       execute command on each request
+  -h, --help             output usage information
 ```
 
 ## Examples
