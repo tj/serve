@@ -24,6 +24,7 @@ program
   .option('-a, --auth <user>:<pass>', 'specify basic auth credentials')
   .option('-F, --format <fmt>', 'specify the log format string', 'dev')
   .option('-p, --port <port>', 'specify the port [3000]', Number, 3000)
+  .option('-r, --root <root>', 'specify the root directory []', String, "")
   .option('    --https-port <port>', 'specify the port [3443]', Number, 3443)
   .option('-H, --hidden', 'enable hidden file serving')
   .option('-S, --no-stylus', 'disable stylus rendering')
@@ -44,6 +45,7 @@ program
 
 // path
 var path = resolve(program.args.shift() || '.');
+path = path + "/" + program.root;
 
 // setup the server
 var server = connect();
