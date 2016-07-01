@@ -10,32 +10,38 @@
 ## Usage
 
 ```
-
 Usage: serve [options] [dir]
 
 Options:
 
-  -v, --version        output the version number
-  -F, --format <fmt>   specify the log format string
-  -p, --port <port>    specify the port [3000]
-  -f, --favicon <path> serve the given favicon
-  -H, --hidden         enable hidden file serving
-  -C, --cors           allows cross origin access serving
-  -S, --no-stylus      disable stylus rendering
-  -J, --no-jade        disable jade rendering
-      --no-less        disable less css rendering
-  -I, --no-icons       disable icons
-  -L, --no-logs        disable request logging
-  -D, --no-dirs        disable directory serving
-      --compress       gzip or deflate the response
-      --exec <cmd>     execute command on each request
-  -h, --help           output usage information
+  -h, --help                output usage information
+  -V, --version             output the version number
+  -a, --auth <user>:<pass>  specify basic auth credentials
+  -F, --format <fmt>        specify the log format string
+  -p, --port <port>         specify the port [3000]
+  -r, --root <root>         specify the root directory []
+      --https-port <port>   specify the port [3443]
+  -H, --hidden              enable hidden file serving
+  -S, --no-stylus           disable stylus rendering
+  -J, --no-jade             disable jade rendering
+      --no-less             disable less css rendering
+  -I, --no-icons            disable icons
+  -L, --no-logs             disable request logging
+  -D, --no-dirs             disable directory serving
+  -f, --favicon <path>      serve the given favicon
+  -C, --cors                allows cross origin access serving
+  -s, --https               also serve over https
+      --key                 key file path for https
+      --cert                certificate file for https
+      --ca                  CA certificate file for https
+      --compress            gzip or deflate the response
+      --exec <cmd>          execute command on each request
 ```
 
 ## Examples
 
  HTTP Accept support built into `connect.directory()`:
- 
+
      $ curl http://local:3000/ -H "Accept: text/plain"
      bin
      History.md
@@ -59,7 +65,7 @@ Options:
 
   ![directory listings](http://f.cl.ly/items/100M2C3o0p2u3A0q1o3H/Screenshot.png)
 
-## License 
+## License
 
 (The MIT License)
 
