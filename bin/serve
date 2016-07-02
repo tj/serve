@@ -136,7 +136,6 @@ if (program.exec) {
 server.use(serveStatic(path, { hidden: program.hidden }));
 
 // directory serving
-
 if (program.dirs) {
     server.use(serveIndex(path, {
       hidden: program.hidden
@@ -221,12 +220,26 @@ if (program.https) {
 
 }
 
-// start the server
-server.listen(program.port, function () {
-  console.log('\033[90mserving \033[36m%s\033[90m on port \033[96m%d\033[0m', path, program.port);
-
-  // open the browser window to this server
-  if (program.open) {
-    open('http://127.0.0.1' + (~~program.port > 0 && ~~program.port < 65536 ? ':' + ~~program.port : ''));
+function onError (err) {
+  switch (err.code) {
+    case 'EADDRINUSE':
+      console.error('\033[33mWARN:\033[90m Port \033[33m%d\033[90m is already in use.', err.port);
+      launch(err.port + 1);
+      break;
+    default:
+      throw err;
   }
-});
+}
+
+function launch (port) {
+  return server.listen(port, function () {
+    // Successful message
+    console.log('\033[90mServing \033[36m%s\033[90m on port \033[96m%d\033[0m', path, port);
+
+    // open the browser window to this server
+    program.open && open('http://127.0.0.1:' + port);
+  }).on('error', onError);
+}
+
+// start the server
+launch(program.port)
