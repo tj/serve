@@ -16,6 +16,7 @@ Options:
 
   -h, --help                output usage information
   -V, --version             output the version number
+  -o, --open                opens a browser window to this server
   -a, --auth <user>:<pass>  specify basic auth credentials
   -F, --format <fmt>        specify the log format string
   -p, --port <port>         specify the port [3000]
@@ -30,7 +31,6 @@ Options:
   -D, --no-dirs             disable directory serving
   -f, --favicon <path>      serve the given favicon
   -C, --cors                allows cross origin access serving
-  -o, --open           opens a browser window to this server
   -s, --https               also serve over https
       --key                 key file path for https
       --cert                certificate file for https

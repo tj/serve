@@ -10,7 +10,7 @@
   , "license": "MIT"
   , "dependencies": {
       "connect": "2.3.x"
-    , "open": "0.0.x"
+    , "opn": "4.0.x"
     , "stylus": "*"
     , "jade": "*"
     , "less-middleware": "0.1.x"
