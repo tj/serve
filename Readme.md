@@ -16,6 +16,7 @@ Options:
 
   -h, --help                output usage information
   -V, --version             output the version number
+  -o, --open                opens a browser window to this server
   -a, --auth <user>:<pass>  specify basic auth credentials
   -F, --format <fmt>        specify the log format string
   -p, --port <port>         specify the port [3000]
