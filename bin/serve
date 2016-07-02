@@ -9,6 +9,12 @@ var resolve = require('path').resolve
   , exec = require('child_process').exec
   , program = require('commander')
   , connect = require('connect')
+  , morgan = require('morgan')
+  , compression = require('compression')
+  , serveFavicon = require('serve-favicon')
+  , serveStatic = require('serve-static')
+  , serveIndex = require('serve-index')
+  , basicAuth = require('basic-auth-connect')
   , open = require('opn')
   , stylus = require('stylus')
   , jade = require('jade')
@@ -58,14 +64,14 @@ if (program.auth) {
   var user = program.auth.split(':')[0];
   var pass = program.auth.split(':')[1];
   if (!user || !pass) throw new Error('user and pass required');
-  server.use(connect.basicAuth(user, pass));
+  server.use(basicAuth(user, pass));
 }
 
 // ignore favicon
-server.use(connect.favicon(program.favicon));
+server.use(serveFavicon(program.favicon || join(__dirname, '../favicon.ico')));
 
 // logger
-if (program.logs) server.use(connect.logger(program.format));
+if (program.logs) server.use(morgan(program.format));
 
 // convert .styl to .css to trick stylus.middleware
 if (program.stylus) {
@@ -116,7 +122,7 @@ if (program.cors) {
 
 // compression
 if (program.compress) {
-  server.use(connect.compress());
+  server.use(compression());
 }
 
 // exec command
@@ -127,12 +133,12 @@ if (program.exec) {
 }
 
 // static files
-server.use(connect.static(path, { hidden: program.hidden }));
+server.use(serveStatic(path, { hidden: program.hidden }));
 
 // directory serving
 
 if (program.dirs) {
-    server.use(connect.directory(path, {
+    server.use(serveIndex(path, {
       hidden: program.hidden
     , icons: program.icons
   }));

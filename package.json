@@ -1,20 +1,32 @@
 {
-    "name": "serve"
-  , "version": "1.4.0"
-  , "description": "Simple command-line file / directory server built with connect"
-  , "keywords": ["static", "server", "connect"]
-  , "author": "TJ Holowaychuk <tj@vision-media.ca>"
-  , "preferGlobal": true
-  , "homepage": "https://github.com/tj/serve"
-  , "repository": "tj/serve"
-  , "license": "MIT"
-  , "dependencies": {
-      "connect": "2.3.x"
-    , "opn": "4.0.x"
-    , "stylus": "*"
-    , "jade": "*"
-    , "less-middleware": "0.1.x"
-    , "commander": "0.6.1"
+  "name": "serve",
+  "version": "1.4.0",
+  "description": "Simple command-line file / directory server built with connect",
+  "keywords": [
+    "static",
+    "server",
+    "connect"
+  ],
+  "author": "TJ Holowaychuk <tj@vision-media.ca>",
+  "preferGlobal": true,
+  "homepage": "https://github.com/tj/serve",
+  "repository": "tj/serve",
+  "license": "MIT",
+  "dependencies": {
+    "basic-auth-connect": "^1.0.0",
+    "commander": "0.6.1",
+    "compression": "^1.6.2",
+    "connect": "3.4.x",
+    "jade": "*",
+    "less-middleware": "0.1.x",
+    "morgan": "^1.7.0",
+    "opn": "4.0.x",
+    "serve-favicon": "2.3.x",
+    "serve-index": "1.8.x",
+    "serve-static": "1.11.x",
+    "stylus": "*"
+  },
+  "bin": {
+    "serve": "./bin/serve"
   }
-  , "bin": { "serve": "./bin/serve" }
 }
