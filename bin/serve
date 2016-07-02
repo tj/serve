@@ -73,14 +73,6 @@ server.use(serveFavicon(program.favicon || join(__dirname, '../favicon.ico')));
 // logger
 if (program.logs) server.use(morgan(program.format));
 
-// convert .styl to .css to trick stylus.middleware
-if (program.stylus) {
-  server.use(function(req, res, next){
-    req.url = req.url.replace(/\.styl$/, '.css');
-    next();
-  });
-}
-
 // jade
 if (program.jade) {
   server.use(function(req, res, next){
@@ -98,6 +90,14 @@ if (program.jade) {
         next(err);
       }
     });
+  });
+}
+
+// convert .styl to .css to trick stylus.middleware
+if (program.stylus) {
+  server.use(function(req, res, next){
+    req.url = req.url.replace(/\.styl$/, '.css');
+    next();
   });
 }
 

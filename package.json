@@ -14,11 +14,11 @@
   "license": "MIT",
   "dependencies": {
     "basic-auth-connect": "^1.0.0",
-    "commander": "0.6.1",
+    "commander": "2.9.0",
     "compression": "^1.6.2",
     "connect": "3.4.x",
     "jade": "*",
-    "less-middleware": "0.1.x",
+    "less-middleware": "2.1.x",
     "morgan": "^1.7.0",
     "opn": "4.0.x",
     "serve-favicon": "2.3.x",
