@@ -17,7 +17,7 @@
     "commander": "2.9.0",
     "compression": "^1.6.2",
     "connect": "3.4.x",
-    "jade": "*",
+    "pug": "*",
     "less-middleware": "2.1.x",
     "morgan": "^1.7.0",
     "opn": "4.0.x",
