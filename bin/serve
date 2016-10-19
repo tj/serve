@@ -21,7 +21,7 @@ var resolve = require('path').resolve
   , less = require('less-middleware')
   , url = require('url')
   , fs = require('fs')
-  , https = require('https');
+  , http2 = require('http2');
 
 // CLI
 
@@ -166,7 +166,7 @@ if (program.https) {
       options.ca = fs.readFileSync(httpsOptions.caFile);
     }
 
-    var httpsServer = https.createServer(options, server)
+    var httpsServer = http2.createServer(options, server)
 
     // start the http server
     httpsServer.listen(program.httpsPort, function () {
