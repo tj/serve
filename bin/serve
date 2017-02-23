@@ -49,6 +49,7 @@ program
   .option('    --ca', 'CA certificate file for https')
   .option('    --compress', 'gzip or deflate the response')
   .option('    --exec <cmd>', 'execute command on each request')
+  .option('-h, --header <header>', 'override/send additional headers in the response', function(val,acc) { return acc.concat(val); }, [])
   .parse(process.argv);
 
 // path
@@ -116,6 +117,16 @@ if (program.cors) {
     res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With, Accept, x-csrf-token, origin');
     if ('OPTIONS' == req.method) return res.end();
+    next();
+  });
+}
+
+if (program.header) {
+  server.use(function(req, res, next){
+    program.header.forEach(function(header) {
+      header = header.split(': ');
+      res.setHeader(header[0], header.slice(1).join(': '));
+    });
     next();
   });
 }
