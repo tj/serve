@@ -40,6 +40,7 @@ Options:
       --ca                  CA certificate file for https
       --compress            gzip or deflate the response
       --exec <cmd>          execute command on each request
+  -h, --header <header>     override/send additional headers in the response
 ```
 
 ## Examples
